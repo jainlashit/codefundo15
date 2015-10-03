@@ -5,6 +5,8 @@
 # Files for the Dalvik VM
 *.dex
 
+cameratest/
+
 # Java class files
 *.class
 
