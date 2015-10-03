@@ -8,7 +8,12 @@ angular.module('starter.controllers', [])
   $scope.centerOnMe = function () {
     console.log("Centering");
     if (!$scope.map) {
+      console.log("Error");
       return;
+    }
+    else
+    {
+      console.log("Success");
     }
 
     $scope.loading = $ionicLoading.show({
