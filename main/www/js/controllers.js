@@ -50,7 +50,8 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('CameraCtrl', function($scope, $ionicPlatform, $cordovaCamera, $http, GameData2, GameData3) {
+.controller('CameraCtrl', 
+  function($scope, $ionicPlatform, $cordovaCamera, $http, $ionicPopup, GameData2, GameData3) {
   console.log("Reporting from camera controller");
   document.addEventListener("deviceready", function () {
     console.log("deviceready");
@@ -82,6 +83,18 @@ angular.module('starter.controllers', [])
 
   }, false);
 
+  // An alert dialog
+   $scope.showAlert = function(message) {
+     var alertPopup = $ionicPopup.alert({
+       title: 'Don\'t eat that!',
+       template: message
+     });
+     alertPopup.then(function(res) {
+       console.log('Thank you for not eating my delicious ice cream cone');
+     });
+   };
+
+
   $scope.sendPhoto = function(){
     var url = "http://192.168.12.79:8000"
     var image = document.getElementById('myImage');
@@ -95,11 +108,13 @@ angular.module('starter.controllers', [])
     })
     .success(function (data, status, headers, config) {
         // console.log(data)
+        console.log(data, status, headers, config)
         $scope.message = 'Created successfully!';
+        $scope.showAlert('Created successfully!');
     })
     .error(function (data, status, headers, config) {
-        // console.log(data)
-        $scope.message = 'Created successfully!';
+        console.log(data, status, headers, config)
+        $scope.showAlert('Request unsuccessful');
     })
   }
 })
