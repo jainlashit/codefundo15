@@ -15,7 +15,6 @@ angular.module('starter.directives', [])
         };
         console.log($element[0]);
         var map = new google.maps.Map($element[0], mapOptions);
-        console.log("The element[0]", $element[0]);
         
         $scope.onCreate({map: map});
 
