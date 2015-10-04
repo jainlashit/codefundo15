@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- CSP support mode (required for Windows Universal apps): https://docs.angularjs.org/api/ng/directive/ngCsp -->
+<html lang="en" ng-app="app" ng-csp>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <!-- JS dependencies (order matters!) -->
+        <script src="scripts/platformOverrides.js"></script>
+        <script src="lib/angular/angular.js"></script>
+        <script src="lib/onsen/js/onsenui.js"></script>
+        <script src="scripts/jquery-2.1.3.min.js"></script>
+
+
+        <!-- CSS dependencies -->
+        <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+        <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-blue-basic-theme.css" />
+
+        <!-- CSP support mode (required for Windows Universal apps) -->
+        <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+
+
+        <!-- --------------- App init --------------- -->
+
+        <title>Main Page</title>
+
+        <script>
+            var server = "10.0.2.2:8000";
+            angular.module('app', ['onsen']);
+            angular.module('app').controller('AppController', function ($scope) {
+                $(document).ready(function() {
+                    alert("ready");
+                    $scope.doSomething = function () {
+                        modal.show();
+                        var obj = new Object();
+                        obj.type = 1;
+                        obj.name = document.getElementById("nick").value;
+                        document.getElementById("lol").innerHTML = "Have patience, " + obj.name + "<br>We are attempting to pair you.";
+                        //code to send the object to the server.
+                        //modal.close();
+                        navigator.geolocation.getCurrentPosition(function(pos) {
+                            alert(pos.coords.latitude + ", " + pos.coords.longitude);
+                            document.getElementById("lol").innerHTML = pos.coords.latitude + ", " + pos.coords.longitude;
+                            
+                            //code to repeatedly poll the server until the room returns not -1
+                            modal.hide();
+                            window.location = "main.html";
+                        }, function(err) {
+                            alert("Error: " + err);
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 5000
+                        });
+                    };
+                });
+            });
+        </script>
+
+        <style>
+            .form-row {
+                margin: 4px;
+            }
+            .width-full {
+                width: 100%;
+            }
+            .vspc {
+                margin-top: 20px;
+            }
+            .formarea {
+                width: 80%;
+                margin: 50px auto 0 auto;
+            }
+        </style>
+
+    </head>
+
+    <body ng-controller="AppController">
+        <!-- Cordova reference -->
+        <script src="cordova.js"></script>
+        <script src="scripts/index.js"></script>
+        <!-- -->
+        <ons-modal var="modal">
+            <ons-icon icon="ion-load-c" spin="true"></ons-icon>
+            <br><br>
+            <p id="lol"></p>
+        </ons-modal>
+
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">App_Title</div>
+            </ons-toolbar>
+            <div class="formarea">
+                <div class="form-row">
+                    <input type="text" id="nick" class="text-input--underbar width-full" placeholder="Nickname" value="">
+                </div>
+                <div class="vspc form-row">
+                    <ons-button modifier="large--cta" ng-click="doSomething()">Play</ons-button>
+                </div>
+            </div>
+        </ons-page>
+    </body>
+</html>

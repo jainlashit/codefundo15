@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!-- CSP support mode (required for Windows Universal apps): https://docs.angularjs.org/api/ng/directive/ngCsp -->
+<html lang="en" ng-app="app" ng-csp>
+<head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- JS dependencies (order matters!) -->
+    <script src="scripts/platformOverrides.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJFjON8damtyIPfENYnfS0vlhdbkCSWE"></script>
+    <script src="scripts/jquery-2.1.3.min.js"></script>
+
+
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components-blue-basic-theme.css" />
+
+    <!-- CSP support mode (required for Windows Universal apps) -->
+    <link rel="stylesheet" href="lib/angular/angular-csp.css" />
+
+
+    <!-- --------------- App init --------------- -->
+
+    <title>Game Page</title>
+
+    <script>
+        angular.module('app', ['onsen']);
+
+        angular.module('app').controller('AppController', function ($scope) {
+            jQuery(document).ready(function() {
+                console.log("Hello");
+                tabbar.on("prechange", function(e) {
+                    if(e.tabItem.page == "map.html") {
+                        navigator.geolocation.getCurrentPosition(function(pos) {
+                            alert(pos.coords.latitude + ", " + pos.coords.longitude);
+                            var maprop = {
+                                center: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+                                zoom: 18,
+                                mapTypeId: google.maps.MapTypeId.ROADMAP
+                            }
+                            var map = new google.maps.Map(document.getElementById('mymap'), maprop);
+                        });
+                    }
+                });
+                $scope.doSomething = function () {
+                    ons.notification.alert({ message: 'tapped' });
+                };
+            });
+        });
+    </script>
+
+    <style>
+        .tab {
+            line-height: 1;
+        }
+
+        .tab-icon {
+            font-size: 24px;
+            padding: 0;
+            margin: 0;
+            vertical-align: top;
+            line-height: 28px;
+        }
+
+        .tab-label {
+            line-height: 11px;
+            vertical-align: top;
+            font-size: 11px;
+        }
+
+        .profile-wrapper {
+            padding: 16px 10px 0 10px;
+        }
+
+        .profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            -webkit-border-radius: 100%;
+            background-color: #ccc;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            padding: 4px 0 2px 0;
+        }
+
+        .profile-email {
+            font-size: 15px;
+            opacity: 0.4;
+        }
+
+        .switch--list-item {
+            margin-right: 0px;
+        }
+
+        .settings-header {
+            font-weight: 500;
+            font-size: 14px;
+            opacity: 0.4;
+            padding: 10px 0 0px 10px;
+            margin-bottom: -4px;
+        }
+
+        .settings-list {
+            margin-top: 10px;
+        }
+
+        .item {
+            padding: 10px;
+            line-height: 1;
+        }
+
+        .item-thum {
+            background-color: #ccc;
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            -webkit-border-radius: 100%;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .item-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.3;
+            margin: 4px 0 0 0;
+            padding: 0 30px 0 0;
+        }
+
+        .item-label {
+            font-size: 12px;
+            color: #999;
+            float: right;
+        }
+    </style>
+
+</head>
+
+<body ng-controller="AppController">
+    <!-- Cordova reference -->
+    <script src="cordova.js"></script>
+    <script src="scripts/index.js"></script>
+    <!-- -->
+
+    <ons-tabbar var="tabbar" >
+        <ons-tab active="true" page="map.html">
+            <div class="tab">
+                <ons-icon icon="ion-map" class="tab-icon"></ons-icon>
+                <div class="tab-label">Map</div>
+            </div>
+        </ons-tab>
+
+        <ons-tab active="true" page="home.html">
+            <div class="tab">
+                <ons-icon icon="ion-home" class="tab-icon"></ons-icon>
+                <div class="tab-label">Home</div>
+            </div>
+        </ons-tab>
+
+        <ons-tab page="settings.html">
+            <div class="tab">
+                <ons-icon icon="ion-camera" class="tab-icon"></ons-icon>
+                <div class="tab-label">Camera</div>
+            </div>
+        </ons-tab>
+    </ons-tabbar>
+
+    <ons-template id="home.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Home</div>
+            </ons-toolbar>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="map.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Map</div>
+            </ons-toolbar>
+            <div style="height: 100%" id="mymap"></div>
+            </div>
+        </ons-page>
+    </ons-template>
+</body>
+</html>
