@@ -24,6 +24,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services' , 
   });
 })
 
+.constant('CONFIG', {
+  'URL' : 'http://192.168.12.79:8000'
+})
+
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states

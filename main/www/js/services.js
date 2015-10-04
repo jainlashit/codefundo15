@@ -1,5 +1,35 @@
 angular.module('starter.services', [])
 
+.factory('LocalData', function() {
+  var localData = {
+    image: ''
+  }
+
+  return {
+    get: function(){
+      return localData
+    },
+
+    set: function(data){
+      localData = data;
+    }
+  }
+})
+
+.factory('Util', function($ionicPopup){
+  var root = {}
+  root.popUp = function(title, msg){
+   var alertPopup = $ionicPopup.alert({
+     title: title,
+     template: msg
+   });
+   alertPopup.then(function(res) {
+     console.log('Thank you for not eating my delicious ice cream cone');
+   });
+  }
+  return root;
+})
+
 .factory('GameData2', function() {
   var gameData = {
     "type": 2,
