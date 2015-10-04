@@ -9,13 +9,13 @@ angular.module('starter.directives', [])
     link: function ($scope, $element, $attr) {
       function initialize() {
         var mapOptions = {
-          center: new google.maps.LatLng(17.4488064, 78.3445417),
-          zoom: 16,
+          center: new google.maps.LatLng(43.07493, -89.381388),
+          zoom: 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
+        console.log($element[0]);
         var map = new google.maps.Map($element[0], mapOptions);
-        console.log("The element[0]", $element[0]);
-
+        
         $scope.onCreate({map: map});
 
         // Stop the side bar from dragging when mousedown/tapdown on the map
