@@ -29,6 +29,7 @@
             var server = "10.0.2.2:8000";
             angular.module('app', ['onsen']);
             angular.module('app').controller('AppController', function ($scope) {
+                var asd = 12312;
                 $(document).ready(function() {
                     alert("ready");
                     $scope.doSomething = function () {
@@ -42,14 +43,16 @@
                         navigator.geolocation.getCurrentPosition(function(pos) {
                             alert(pos.coords.latitude + ", " + pos.coords.longitude);
                             document.getElementById("lol").innerHTML = pos.coords.latitude + ", " + pos.coords.longitude;
+                            
+                            //code to repeatedly poll the server until the room returns not -1
+                            modal.hide();
+                            window.location = "main.html";
                         }, function(err) {
                             alert("Error: " + err);
                         }, {
                             enableHighAccuracy: true,
                             timeout: 5000
                         });
-                        modal.hide();
-                        //code to repeatedly poll the server until the room returns 2
                     };
                 });
             });
@@ -75,6 +78,7 @@
 
     <body ng-controller="AppController">
         <!-- Cordova reference -->
+        <script src="lib/ng-cordova.js"></script>
         <script src="cordova.js"></script>
         <script src="scripts/index.js"></script>
         <!-- -->

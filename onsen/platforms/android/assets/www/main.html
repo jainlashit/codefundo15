@@ -10,6 +10,9 @@
     <script src="scripts/platformOverrides.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="lib/onsen/js/onsenui.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJFjON8damtyIPfENYnfS0vlhdbkCSWE"></script>
+    <script src="scripts/jquery-2.1.3.min.js"></script>
+
 
     <!-- CSS dependencies -->
     <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
@@ -24,12 +27,87 @@
     <title>Game Page</title>
 
     <script>
-        angular.module('app', ['onsen']);
+        angular.module('app', ['onsen', 'ngCordova']);
 
-        angular.module('app').controller('AppController', function ($scope) {
-            $scope.doSomething = function () {
-                ons.notification.alert({ message: 'tapped' });
-            };
+        angular.module('app').controller('AppController', function ($scope, $http, $cordovaCamera) {
+            jQuery(document).ready(function() {
+                console.log("Hello");
+                URL = "http://192.168.12.79:8000"
+                tabbar.on("prechange", function(e) {
+                    if(e.tabItem.page == "camera.html") {
+                      document.addEventListener("deviceready", function () {
+                        console.log("deviceready");
+                        var options = {
+                          quality: 50,
+                          destinationType: Camera.DestinationType.DATA_URL,
+                          sourceType: Camera.PictureSourceType.CAMERA,
+                          allowEdit: true,
+                          encodingType: Camera.EncodingType.JPEG,
+                          targetWidth: 400,
+                          targetHeight: 600,
+                          cameraDirection: 0,
+                          popoverOptions: CameraPopoverOptions,
+                          saveToPhotoAlbum: false,
+                          correctOrientation:true
+                        };
+
+                        $scope.getPhoto = function(){
+                          $cordovaCamera.getPicture(options).then(function(imageData) {
+                            var image = document.getElementById('myImage');
+                            image.src = "data:image/jpeg;base64," + imageData;
+                            console.log(image.src)
+                          }, function(err) {
+                            // error
+                          });
+                        };
+
+                        $scope.getPhoto();
+
+                      }, false);
+
+                      $scope.sendPhoto = function(){
+                        // var url = "http://192.168.12.79:8000"
+                        var url = URL
+                        var image = document.getElementById('myImage');
+                        console.log(image);
+                        // var data = GameData3.get();
+                        var data = {}
+                        data.img = image.src;
+                        data = "data=" +  JSON.stringify(data);
+                        console.log(data);  
+
+                        $http.post(url, data, {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+                        })
+                        .success(function (data, status, headers, config) {
+                            // console.log(data)
+                            console.log(data, status, headers, config)
+                            ons.notification.alert({ message: 'Image sent!' });
+                        })
+                        .error(function (data, status, headers, config) {
+                            console.log(data, status, headers, config)
+                            ons.notification.alert({ message: 'Unable to send message' });
+                        })
+                      }
+                    }
+
+
+                    if(e.tabItem.page == "map.html") {
+                        navigator.geolocation.getCurrentPosition(function(pos) {
+                            alert(pos.coords.latitude + ", " + pos.coords.longitude);
+                            var maprop = {
+                                center: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+                                zoom: 18,
+                                mapTypeId: google.maps.MapTypeId.ROADMAP
+                            }
+                            var map = new google.maps.Map(document.getElementById('mymap'), maprop);
+                        });
+                    }
+                });
+                $scope.doSomething = function () {
+                    ons.notification.alert({ message: 'tapped' });
+                };
+            });
         });
     </script>
 
@@ -127,11 +205,12 @@
 
 <body ng-controller="AppController">
     <!-- Cordova reference -->
+    <script src="lib/ng-cordova.js"></script>
     <script src="cordova.js"></script>
     <script src="scripts/index.js"></script>
     <!-- -->
 
-    <ons-tabbar>
+    <ons-tabbar var="tabbar" >
         <ons-tab active="true" page="map.html">
             <div class="tab">
                 <ons-icon icon="ion-map" class="tab-icon"></ons-icon>
@@ -146,7 +225,7 @@
             </div>
         </ons-tab>
 
-        <ons-tab page="settings.html">
+        <ons-tab page="camera.html">
             <div class="tab">
                 <ons-icon icon="ion-camera" class="tab-icon"></ons-icon>
                 <div class="tab-label">Camera</div>
@@ -155,89 +234,43 @@
     </ons-tabbar>
 
     <ons-template id="home.html">
-        <ons-navigator>
-            <ons-page>
-                <ons-toolbar>
-                    <div class="left"><ons-toolbar-button ng-click="doSomething()"><ons-icon icon="ion-compose"></ons-icon></ons-toolbar-button></div>
-                    <div class="center">Home</div>
-                    <div class="right"></div>
-                </ons-toolbar>
-
-                <ons-list style="margin: 1px 0">
-                    <ons-list-item modifier="chevron" class="item" ng-repeat="i in [1,2]" ng-click="doSomething()">
-                        <ons-row>
-                            <ons-col width="60px">
-                                <div class="item-thum"></div>
-                            </ons-col>
-                            <ons-col>
-                                <header>
-                                    <span class="item-title">Rorem Ipsum</span>
-                                    <span class="item-label">5h</span>
-                                </header>
-                                <p class="item-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            </ons-col>
-                        </ons-row>
-                    </ons-list-item>
-                </ons-list>
-            </ons-page>
-        </ons-navigator>
-    </ons-template>
-
-    <ons-template id="settings.html">
         <ons-page>
             <ons-toolbar>
-                <div class="center">Settings</div>
+                <div class="center">Home</div>
             </ons-toolbar>
+        </ons-page>
+    </ons-template>
 
-            <ons-row class="profile-wrapper">
-                <ons-col width="60px" class="profile-image-wrapper">
-                    <div class="profile-image"></div>
-                </ons-col>
+    <ons-template id="camera.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Camera</div>
+            </ons-toolbar>
+            <div>
 
-                <ons-col>
-                    <div class="profile-name">Foobar</div>
-                    <div class="profile-email">foobar@example.com</div>
-                </ons-col>
+              <div class="item item-image">
+                <img id="myImage" src="">
+              </div>
 
-            </ons-row>
 
-            <div class="settings-header">Share</div>
+              <button class="button button-block button-calm" ng-click="getPhoto()">
+                Capture another image!
+              </button>
+              <button class="button button-block button-balanced" ng-click="sendPhoto()">
+                Send image!
+              </button>
 
-            <ons-list modifier="inset" class="settings-list">
-                <ons-list-item>
-                    Twitter
-                    <ons-switch modifier="list-item"></ons-switch>
-                </ons-list-item>
+            </div>
+        </ons-page>
+    </ons-template>
 
-                <ons-list-item>
-                    Facebook
-                    <ons-switch modifier="list-item" checked></ons-switch>
-                </ons-list-item>
-            </ons-list>
-
-            <div class="settings-header">Others</div>
-
-            <ons-list modifier="inset" class="settings-list">
-                <ons-list-item modifier="chevron" ng-click="doSomething()">
-                    Terms of Service
-                </ons-list-item>
-
-                <ons-list-item modifier="chevron" ng-click="doSomething()">
-                    Privacy Policy
-                </ons-list-item>
-            </ons-list>
-
-            <br>
-
-            <ons-list modifier="inset" class="settings-list">
-                <ons-list-item modifier="tappable" ng-click="doSomething()">
-                    <ons-icon icon="ion-log-out" style="opacity: 0.8"></ons-icon>
-                    Sign out
-                </ons-list-item>
-            </ons-list>
-
-            <br>
-
+    <ons-template id="map.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Map</div>
+            </ons-toolbar>
+            <div style="height: 100%" id="mymap"></div>
+            </div>
         </ons-page>
     </ons-template>
 </body>

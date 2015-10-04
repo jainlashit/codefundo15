@@ -27,12 +27,71 @@
     <title>Game Page</title>
 
     <script>
-        angular.module('app', ['onsen']);
+        angular.module('app', ['onsen', 'ngCordova']);
 
-        angular.module('app').controller('AppController', function ($scope) {
+        angular.module('app').controller('AppController', function ($scope, $http, $cordovaCamera) {
             jQuery(document).ready(function() {
                 console.log("Hello");
+                URL = "http://192.168.12.79:8000"
                 tabbar.on("prechange", function(e) {
+                    if(e.tabItem.page == "camera.html") {
+                      document.addEventListener("deviceready", function () {
+                        console.log("deviceready");
+                        var options = {
+                          quality: 50,
+                          destinationType: Camera.DestinationType.DATA_URL,
+                          sourceType: Camera.PictureSourceType.CAMERA,
+                          allowEdit: true,
+                          encodingType: Camera.EncodingType.JPEG,
+                          targetWidth: 400,
+                          targetHeight: 600,
+                          cameraDirection: 0,
+                          popoverOptions: CameraPopoverOptions,
+                          saveToPhotoAlbum: false,
+                          correctOrientation:true
+                        };
+
+                        $scope.getPhoto = function(){
+                          $cordovaCamera.getPicture(options).then(function(imageData) {
+                            var image = document.getElementById('myImage');
+                            image.src = "data:image/jpeg;base64," + imageData;
+                            console.log(image.src)
+                          }, function(err) {
+                            // error
+                          });
+                        };
+
+                        $scope.getPhoto();
+
+                      }, false);
+
+                      $scope.sendPhoto = function(){
+                        // var url = "http://192.168.12.79:8000"
+                        var url = URL
+                        var image = document.getElementById('myImage');
+                        console.log(image);
+                        // var data = GameData3.get();
+                        var data = {}
+                        data.img = image.src;
+                        data = "data=" +  JSON.stringify(data);
+                        console.log(data);  
+
+                        $http.post(url, data, {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+                        })
+                        .success(function (data, status, headers, config) {
+                            // console.log(data)
+                            console.log(data, status, headers, config)
+                            ons.notification.alert({ message: 'Image sent!' });
+                        })
+                        .error(function (data, status, headers, config) {
+                            console.log(data, status, headers, config)
+                            ons.notification.alert({ message: 'Unable to send message' });
+                        })
+                      }
+                    }
+
+
                     if(e.tabItem.page == "map.html") {
                         navigator.geolocation.getCurrentPosition(function(pos) {
                             alert(pos.coords.latitude + ", " + pos.coords.longitude);
@@ -146,6 +205,7 @@
 
 <body ng-controller="AppController">
     <!-- Cordova reference -->
+    <script src="lib/ng-cordova.js"></script>
     <script src="cordova.js"></script>
     <script src="scripts/index.js"></script>
     <!-- -->
@@ -165,7 +225,7 @@
             </div>
         </ons-tab>
 
-        <ons-tab page="settings.html">
+        <ons-tab page="camera.html">
             <div class="tab">
                 <ons-icon icon="ion-camera" class="tab-icon"></ons-icon>
                 <div class="tab-label">Camera</div>
@@ -178,6 +238,29 @@
             <ons-toolbar>
                 <div class="center">Home</div>
             </ons-toolbar>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="camera.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Camera</div>
+            </ons-toolbar>
+            <div>
+
+              <div class="item item-image">
+                <img id="myImage" src="">
+              </div>
+
+
+              <button class="button button-block button-calm" ng-click="getPhoto()">
+                Capture another image!
+              </button>
+              <button class="button button-block button-balanced" ng-click="sendPhoto()">
+                Send image!
+              </button>
+
+            </div>
         </ons-page>
     </ons-template>
 
