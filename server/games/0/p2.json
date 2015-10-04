@@ -1,0 +1,14 @@
+{
+    "timestamp": 1443885022403,
+    "opp_gps": {
+        "lat":109.4444,
+        "lon":-122.326897
+    },
+    "name":"Jeromde",
+    "timeToGPS":300000,
+    "gameState":0,
+    "ammo":3,
+    "timeToReload":0,
+    "lives":5,
+    "img": 0
+}

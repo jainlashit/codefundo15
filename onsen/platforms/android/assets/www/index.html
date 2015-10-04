@@ -26,34 +26,49 @@
         <title>Main Page</title>
 
         <script>
-            var server = "10.0.2.2:8000";
+            var server = "http://192.168.12.79:8000";
             angular.module('app', ['onsen']);
             angular.module('app').controller('AppController', function ($scope) {
                 var asd = 12312;
                 $(document).ready(function() {
-                    alert("ready");
-                    $scope.doSomething = function () {
-                        modal.show();
-                        var obj = new Object();
-                        obj.type = 1;
-                        obj.name = document.getElementById("nick").value;
-                        document.getElementById("lol").innerHTML = "Have patience, " + obj.name + "<br>We are attempting to pair you.";
-                        //code to send the object to the server.
-                        //modal.close();
-                        navigator.geolocation.getCurrentPosition(function(pos) {
-                            alert(pos.coords.latitude + ", " + pos.coords.longitude);
-                            document.getElementById("lol").innerHTML = pos.coords.latitude + ", " + pos.coords.longitude;
-                            
-                            //code to repeatedly poll the server until the room returns not -1
-                            modal.hide();
-                            window.location = "main.html";
-                        }, function(err) {
-                            alert("Error: " + err);
-                        }, {
-                            enableHighAccuracy: true,
-                            timeout: 5000
-                        });
-                    };
+                        alert("ready");
+                        $scope.doSomething = function () {
+                            modal.show();
+                            var obj = new Object();
+                            obj.type = 1;
+                            obj.name = document.getElementById("nick").value;
+                            document.getElementById("lol").innerHTML = "Have patience, " + obj.name + "<br>We are attempting to pair you.";
+                            jQuery.ajax({
+                                url: server,
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*",
+                                    "Content-Type": 'application/x-www-form-urlencoded; charset=UTF-8' 
+                                },
+                                method: "post",
+                                success: function() {
+                                    alert("YYYEAYS");
+                                },
+                                error: function(xh, txtstt, errth) {
+                                    alert(JSON.stringify(xh));
+                                    alert(txtstt);
+                                    alert(errth);
+                                }
+
+                            })
+                            // navigator.geolocation.getCurrentPosition(function(pos) {
+                            //     alert(pos.coords.latitude + ", " + pos.coords.longitude);
+                            //     document.getElementById("lol").innerHTML = pos.coords.latitude + ", " + pos.coords.longitude;
+                                
+                            //     //code to repeatedly poll the server until the room returns not -1
+                            //     modal.hide();
+                            //     window.location = "main.html";
+                            // }, function(err) {
+                            //     alert("Error: " + err);
+                            // }, {
+                            //     enableHighAccuracy: true,
+                            //     timeout: 5000
+                            // });
+                        };
                 });
             });
         </script>

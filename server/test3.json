@@ -1,0 +1,12 @@
+{
+	"id": 2,
+	"gid": 1,
+	"currentGPS": {
+		"lat": 3.1094,
+		"lon": -21.32801
+	},
+	"end": 0,
+	"img": 0,
+	"response": -1,
+	"type": 3
+}

@@ -10,7 +10,7 @@
     <script src="scripts/platformOverrides.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="lib/onsen/js/onsenui.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJFjON8damtyIPfENYnfS0vlhdbkCSWE"></script>
+    <!-- // <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJFjON8damtyIPfENYnfS0vlhdbkCSWE&sensor=false"></script> -->
     <script src="scripts/jquery-2.1.3.min.js"></script>
 
 
@@ -30,83 +30,93 @@
         angular.module('app', ['onsen', 'ngCordova']);
 
         angular.module('app').controller('AppController', function ($scope, $http, $cordovaCamera) {
+            alert("Level1c");
             jQuery(document).ready(function() {
+                alert("Level2c");
                 console.log("Hello");
                 URL = "http://192.168.12.79:8000"
-                tabbar.on("prechange", function(e) {
-                    if(e.tabItem.page == "camera.html") {
-                      document.addEventListener("deviceready", function () {
-                        console.log("deviceready");
-                        var options = {
-                          quality: 50,
-                          destinationType: Camera.DestinationType.DATA_URL,
-                          sourceType: Camera.PictureSourceType.CAMERA,
-                          allowEdit: true,
-                          encodingType: Camera.EncodingType.JPEG,
-                          targetWidth: 400,
-                          targetHeight: 600,
-                          cameraDirection: 0,
-                          popoverOptions: CameraPopoverOptions,
-                          saveToPhotoAlbum: false,
-                          correctOrientation:true
-                        };
+                window.onGML = function() {
+                     alert("Hello");
+                    // tabbar.on("prechange", function(e) {
+                    //     if(e.tabItem.page == "camera.html") {
+                    //       document.addEventListener("deviceready", function () {
+                    //         console.log("deviceready");
+                    //         var options = {
+                    //           quality: 50,
+                    //           destinationType: Camera.DestinationType.DATA_URL,
+                    //           sourceType: Camera.PictureSourceType.CAMERA,
+                    //           allowEdit: true,
+                    //           encodingType: Camera.EncodingType.JPEG,
+                    //           targetWidth: 400,
+                    //           targetHeight: 600,
+                    //           cameraDirection: 0,
+                    //           popoverOptions: CameraPopoverOptions,
+                    //           saveToPhotoAlbum: false,
+                    //           correctOrientation:true
+                    //         };
 
-                        $scope.getPhoto = function(){
-                          $cordovaCamera.getPicture(options).then(function(imageData) {
-                            var image = document.getElementById('myImage');
-                            image.src = "data:image/jpeg;base64," + imageData;
-                            console.log(image.src)
-                          }, function(err) {
-                            // error
-                          });
-                        };
+                    //         $scope.getPhoto = function(){
+                    //           $cordovaCamera.getPicture(options).then(function(imageData) {
+                    //             var image = document.getElementById('myImage');
+                    //             image.src = "data:image/jpeg;base64," + imageData;
+                    //             console.log(image.src)
+                    //           }, function(err) {
+                    //             // error
+                    //           });
+                    //         };
 
-                        $scope.getPhoto();
+                    //         $scope.getPhoto();
 
-                      }, false);
+                    //       }, false);
 
-                      $scope.sendPhoto = function(){
-                        // var url = "http://192.168.12.79:8000"
-                        var url = URL
-                        var image = document.getElementById('myImage');
-                        console.log(image);
-                        // var data = GameData3.get();
-                        var data = {}
-                        data.img = image.src;
-                        data = "data=" +  JSON.stringify(data);
-                        console.log(data);  
+                    //       $scope.sendPhoto = function(){
+                    //         // var url = "http://192.168.12.79:8000"
+                    //         var url = URL
+                    //         var image = document.getElementById('myImage');
+                    //         console.log(image);
+                    //         // var data = GameData3.get();
+                    //         var data = {}
+                    //         data.img = image.src;
+                    //         data = "data=" +  JSON.stringify(data);
+                    //         console.log(data);  
 
-                        $http.post(url, data, {
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-                        })
-                        .success(function (data, status, headers, config) {
-                            // console.log(data)
-                            console.log(data, status, headers, config)
-                            ons.notification.alert({ message: 'Image sent!' });
-                        })
-                        .error(function (data, status, headers, config) {
-                            console.log(data, status, headers, config)
-                            ons.notification.alert({ message: 'Unable to send message' });
-                        })
-                      }
-                    }
+                    //         $http.post(url, data, {
+                    //             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+                    //         })
+                    //         .success(function (data, status, headers, config) {
+                    //             // console.log(data)
+                    //             console.log(data, status, headers, config)
+                    //             ons.notification.alert({ message: 'Image sent!' });
+                    //         })
+                    //         .error(function (data, status, headers, config) {
+                    //             console.log(data, status, headers, config)
+                    //             ons.notification.alert({ message: 'Unable to send message' });
+                    //         })
+                    //       }
+                    //     }
 
 
-                    if(e.tabItem.page == "map.html") {
-                        navigator.geolocation.getCurrentPosition(function(pos) {
-                            alert(pos.coords.latitude + ", " + pos.coords.longitude);
-                            var maprop = {
-                                center: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
-                                zoom: 18,
-                                mapTypeId: google.maps.MapTypeId.ROADMAP
-                            }
-                            var map = new google.maps.Map(document.getElementById('mymap'), maprop);
-                        });
-                    }
+                    //     if(e.tabItem.page == "map.html") {
+                    //         navigator.geolocation.getCurrentPosition(function(pos) {
+                    //             alert(pos.coords.latitude + ", " + pos.coords.longitude);
+                    //             var maprop = {
+                    //                 center: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+                    //                 zoom: 18,
+                    //                 mapTypeId: google.maps.MapTypeId.ROADMAP
+                    //             }
+                    //             var map = new google.maps.Map(document.getElementById('mymap'), maprop);
+                    //         });
+                    //     }
+                    // });
+                    // $scope.doSomething = function () {
+                    //     ons.notification.alert({ message: 'tapped' });
+                    // };
+                }
+                jQuery.getScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJFjON8damtyIPfENYnfS0vlhdbkCSWE&sensor=false&callback=onGML", function() {
+                    alert("WTF Success");
+                }).fail(function(xh, sett, exception) {
+                    alert("WTFFlAIL: " + JSON.stringify(xh));
                 });
-                $scope.doSomething = function () {
-                    ons.notification.alert({ message: 'tapped' });
-                };
             });
         });
     </script>
